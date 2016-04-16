@@ -2,51 +2,48 @@ package org.sc.ex1;
 
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
+import java.util.Random;
 
 import org.junit.Test;
 
 public class MultiNeuron {
 
-	int[][] inputValues = { { 1, 5 }, { 0, 4 } };
-	int[] outputValue = { -2, -4, 7 };
+	int[][] inputValues = { { 1, 5, 3 }, { 2, 0, -1 }, { 12, 3, -1 }, { 0, 4, -2 } };
+	int[] outputValue = { -12, 5, 2, 9 };
 	double marginForError = 0.00000001;
-	double trainingStep = 0.001;
+	double trainingStep = 0.005;
 	double[] weights;
 
-	int neuronInputs = inputValues.length;
+	int neuronInputs = inputValues[0].length;
+	private int MAX_ITERATIONS = 100000;
 
 	public MultiNeuron() {
-		weights = new double[outputValue.length];
+		weights = new double[inputValues[0].length];
+
+		for (int i = 0; i < weights.length; i++) {
+			weights[i] = new Random().nextDouble();
+		}
 	}
 
 	public void deltaRule() {
-		boolean allCorrect = false;
-		
-		while (!allCorrect) {
-			for (int i = 0; i < outputValue.length; i++) {
-				double output = generateValue(i);
-				for (int m = 0; m < inputValues.length; m++) {
-					for (int n = 0; n < inputValues[m].length; n++) {
-						weights[i] = weights[i] + trainingStep * inputValues[m][n] * (outputValue[i] - output);
-					}
+		for (int index = 0; index < MAX_ITERATIONS; index++) {
+			System.out.println("Iteration no " + index);
+			for (int m = 0; m < outputValue.length; m++) {
+				double output = generateValue(m);
+				for (int i = 0; i < inputValues[0].length; i++) {
+					weights[i] = weights[i] + trainingStep * inputValues[m][i] * (outputValue[m] - output);
 				}
-				System.out.println("received " + output + " expected " + outputValue[i] + " diff = "
-						+ (output - outputValue[i]));
-				if (Math.abs((output - outputValue[i])) < marginForError) {
-					allCorrect = true;
-				}
+				System.out.println(
+						"received " + output + " expected " + outputValue[m] + " diff = " + (output - outputValue[m]));
 			}
 		}
-
-
 	}
 
-	double generateValue(int i) {
+	double generateValue(int m) {
 		double result = 0;
-			for (int m = 0; m < inputValues.length; m++)
-				for (int n = 0; n < inputValues.length; n++) {
-					result = weights[i] * inputValues[m][n];
-				}
+		for (int i = 0; i < inputValues[0].length; i++) {
+			result += weights[i] * inputValues[m][i];
+		}
 		return result;
 	}
 
