@@ -6,7 +6,7 @@ public class Utils {
 	public static int NUMBER_OF_PATTERNS = 0;
 	public static int LENGHT_OF_PATTERN = 0;
 	
-	public static String PATH_TO_PATTERNS = "C:\\Users\\Magdalena\\Desktop\\SC\\patterns";
+	public static String PATH_TO_PATTERNS = "C:\\Users\\Magdalena\\Documents\\Szko³a\\Computer Science and Information Technology\\Semestr 1\\Soft Computing\\Patterns for Task2";
 	public static final String NEURON_INPUT = "INPUT";
 	public static final String NEURON_OUTPUT = "OUTPUT";
 
