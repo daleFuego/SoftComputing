@@ -1,5 +1,7 @@
 package org.sc.ex2;
 
+import org.sc.commons.Utils;
+
 public class Main {
 
 	public static void main(String[] args) {
@@ -8,10 +10,10 @@ public class Main {
 		Utils.NUMBER_OF_PATTERNS = inputPatterns.getFileCount();
 
 		double[][] inputValues = inputPatterns.getInputValues();
-		double[][] weights = new double[4][Utils.LENGHT_OF_PATTERN];
-		double[] outputValues = new double[4];
+		double[][] weights = new double[Utils.NUMBER_OF_PATTERNS][Utils.LENGHT_OF_PATTERN];
+		double[] outputValues = new double[Utils.NUMBER_OF_PATTERNS];
 
-		for (int i = 0; i < 4; i++) {
+		for (int i = 0; i < Utils.NUMBER_OF_PATTERNS; i++) {
 			int detectedOnes = 0;
 			for (int j = 0; j < Utils.LENGHT_OF_PATTERN; j++) {
 				weights[i][j] = inputValues[i][j];
