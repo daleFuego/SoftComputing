@@ -1,10 +1,8 @@
-package org.sc.ex2.patterns;
+package org.sc.ex2;
 
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
-
-import org.sc.ex2.app.Utils;
 
 public class InputPatterns {
 
@@ -32,10 +30,8 @@ public class InputPatterns {
 				bufferedReader.close();
 
 				structure[0] = height * width;
+				Utils.LENGHT_OF_PATTERN = structure[0];
 				structure[1] = patternFiles.listFiles().length;
-
-				Utils.LENGHT_OF_PATTERN = height * width;
-				Utils.NUMBER_OF_PATTERNS = patternFiles.listFiles().length;
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
@@ -101,5 +97,9 @@ public class InputPatterns {
 		}
 
 		return result;
+	}
+	
+	public int getFileCount(){
+		return patternFiles.listFiles().length;
 	}
 }
