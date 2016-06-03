@@ -4,91 +4,71 @@ import org.sc.commons.Utils;
 
 public class Main {
 
-	private static double[] inputWeights = { 0.05, 0.5 };
-	private static double[] hiddenWeights = new double[Utils.NUMBER_OF_INPUT_NEURONS];
-	private static double trainingStep = 0.1;
-	private static boolean isNetworkWellTrained = true;
+	private static InputNeuron[] inputNeurons = new InputNeuron[Utils.NUMBER_OF_INPUT_NEURONS];
+	private static HiddenNeuron[] hiddenNeurons = new HiddenNeuron[Utils.NUMBER_OF_HIDDEN_NEURONS];
+	private static OutputNeuron[] outputNeurons = new OutputNeuron[Utils.NUMBER_OF_OUTPUT_NEURONS];
+	private static double learningFactor = 0.1;
 
 	public static void main(String[] args) {
-		Perceptron perceptron = new Perceptron();
 
-		// Utils.PATTERNS[0] - input values
-		// Utils.PATTERNS[1] - expected output values
+		for (int inputNeuron = 0; inputNeuron < Utils.NUMBER_OF_INPUT_NEURONS; inputNeuron++) {
+			inputNeurons[inputNeuron] = new InputNeuron();
+		}
 
-		do {
-			for (int indexOfPattern = 0; indexOfPattern < Utils.PATTERNS.length; indexOfPattern++) {
-				int[][] trainingPattern = Utils.PATTERNS[indexOfPattern];
+		for (int hiddenNeuron = 0; hiddenNeuron < Utils.NUMBER_OF_HIDDEN_NEURONS; hiddenNeuron++) {
+			hiddenNeurons[hiddenNeuron] = new HiddenNeuron();
+			hiddenNeurons[hiddenNeuron].initWeights(Utils.NUMBER_OF_INPUT_NEURONS);
+		}
 
-				for (int indexOfInputNeuron = 0; indexOfInputNeuron < Utils.NUMBER_OF_INPUT_NEURONS; indexOfInputNeuron++) {
-					Neuron inputNeuron = perceptron.getInputNeurons()[indexOfInputNeuron];
-					inputNeuron.setOutput(trainingPattern[0][indexOfInputNeuron]);
+		for (int outputNeuron = 0; outputNeuron < Utils.NUMBER_OF_OUTPUT_NEURONS; outputNeuron++) {
+			outputNeurons[outputNeuron] = new OutputNeuron();
+			outputNeurons[outputNeuron].initWeights(Utils.NUMBER_OF_HIDDEN_NEURONS);
+		}
+
+		for (int i = 0; i < 1000; i++) {
+			for (int inputPattern = 0; inputPattern < Utils.PATTERNS.length - 2; inputPattern++) {
+				System.out.println("Pattern " + inputPattern);
+
+				for (int inputNeuron = 0; inputNeuron < Utils.NUMBER_OF_INPUT_NEURONS; inputNeuron++) {
+					inputNeurons[inputNeuron].inputValue = Utils.PATTERNS[inputPattern][0][inputNeuron];
+					System.out.println("Input " + inputNeuron + " : " + inputNeurons[inputNeuron].inputValue);
 				}
 
-				for (int indexOfOutputNeuron = 0; indexOfOutputNeuron < Utils.NUMBER_OF_OUTPUT_NEURONS; indexOfOutputNeuron++) {
-					Neuron outputNeuron = perceptron.getOutputNeurons()[indexOfOutputNeuron];
-					outputNeuron.setWeights(inputWeights);
-					double errorSignal = signoidFunctionDerivative(outputNeuron.getWeightedSum())
-							* (trainingPattern[1][indexOfOutputNeuron] - outputNeuron.getOutput());
-					outputNeuron.setErrorSignal(errorSignal);
+				for (int hiddenNeuron = 0; hiddenNeuron < Utils.NUMBER_OF_HIDDEN_NEURONS; hiddenNeuron++) {
+					hiddenNeurons[hiddenNeuron].functionS1(inputNeurons);
+					hiddenNeurons[hiddenNeuron].functionV1();
 				}
 
-				for (int indexOfHiddenNeuron = 0; indexOfHiddenNeuron < Utils.NUMBER_OF_HIDDEN_NEURONS; indexOfHiddenNeuron++) {
-					Neuron hiddenNeuron = perceptron.getHiddenNeurons()[indexOfHiddenNeuron];
-					hiddenNeuron.setWeights(hiddenWeights);
+				for (int outputNeuron = 0; outputNeuron < Utils.NUMBER_OF_OUTPUT_NEURONS; outputNeuron++) {
+					outputNeurons[outputNeuron].functionS2(hiddenNeurons);
+					outputNeurons[outputNeuron].functionV2();
+				}
+				// End of step 1
 
-					double sumOfOutputNeuronWeights = 0;
-
-					for (int indexOfOutputNeuron = 0; indexOfOutputNeuron < Utils.NUMBER_OF_OUTPUT_NEURONS; indexOfOutputNeuron++) {
-						Neuron outputNeuron = perceptron.getOutputNeurons()[indexOfOutputNeuron];
-						sumOfOutputNeuronWeights += outputNeuron.getWeight(1) * outputNeuron.getErrorSignal();
-					}
-
-					double errorSignal = signoidFunctionDerivative(hiddenNeuron.getWeightedSum())
-							* sumOfOutputNeuronWeights;
-					hiddenNeuron.setErrorSignal(errorSignal);
+				for (int outputNeuron = 0; outputNeuron < Utils.NUMBER_OF_OUTPUT_NEURONS; outputNeuron++) {
+					outputNeurons[outputNeuron].D2(Utils.PATTERNS[inputPattern][1][outputNeuron]);
 				}
 
-				for (int indexOfHiddenNeuron = 0; indexOfHiddenNeuron < Utils.NUMBER_OF_HIDDEN_NEURONS; indexOfHiddenNeuron++) {
-					Neuron hiddenNeuron = perceptron.getHiddenNeurons()[indexOfHiddenNeuron];
-					double[] updatedWeights = new double[Utils.NUMBER_OF_INPUT_NEURONS];
-					for (int index = 0; index < hiddenNeuron.getWeights().length; index++) {
-						updatedWeights[index] = hiddenNeuron.getWeight(index)
-								+ trainingStep * hiddenNeuron.getErrorSignal() * hiddenNeuron.getOutput();
-					}
-					hiddenNeuron.setWeights(updatedWeights);
+				for (int hiddenNeuron = 0; hiddenNeuron < Utils.NUMBER_OF_HIDDEN_NEURONS; hiddenNeuron++) {
+					hiddenNeurons[hiddenNeuron].functionD1(outputNeurons, hiddenNeuron);
 				}
-				for (int indexOfOutputNeuron = 0; indexOfOutputNeuron < Utils.NUMBER_OF_OUTPUT_NEURONS; indexOfOutputNeuron++) {
-					Neuron outputNeuron = perceptron.getOutputNeurons()[indexOfOutputNeuron];
-					double[] updatedWeights = new double[Utils.NUMBER_OF_OUTPUT_NEURONS];
-					for (int index = 0; index < outputNeuron.getWeights().length; index++) {
-						updatedWeights[index] = outputNeuron.getWeight(index)
-								+ trainingStep * outputNeuron.getErrorSignal() * outputNeuron.getOutput();
-					}
-					outputNeuron.setWeights(updatedWeights);
+				// End of step 2
+
+				for (int hiddenNeuron = 0; hiddenNeuron < Utils.NUMBER_OF_HIDDEN_NEURONS; hiddenNeuron++) {
+					hiddenNeurons[hiddenNeuron].updateWeights(learningFactor, inputNeurons);
 				}
-			}
 
-			for (int indexOfPattern = 0; indexOfPattern < Utils.PATTERNS.length; indexOfPattern++) {
-				int[][] trainingPattern = Utils.PATTERNS[indexOfPattern];
+				for (int outputNeuron = 0; outputNeuron < Utils.NUMBER_OF_OUTPUT_NEURONS; outputNeuron++) {
+					outputNeurons[outputNeuron].updateWeights(learningFactor, hiddenNeurons);
+				}
+				// End of step 3
 
-				for (int indexOfOutputNeuron = 0; indexOfOutputNeuron < Utils.NUMBER_OF_OUTPUT_NEURONS; indexOfOutputNeuron++) {
-					Neuron outputNeuron = perceptron.getOutputNeurons()[indexOfOutputNeuron];
-					if (trainingPattern[1][indexOfOutputNeuron] != outputNeuron.getOutput()) {
-						isNetworkWellTrained = false;
-					}
+				for (int outputNeuron = 0; outputNeuron < Utils.NUMBER_OF_OUTPUT_NEURONS; outputNeuron++) {
+					System.out.println(outputNeuron + " : " + outputNeurons[outputNeuron].V2);
 				}
 			}
-
-			System.out.println("Is network well trained? " + isNetworkWellTrained);
-		} while (!isNetworkWellTrained);
+		}
 
 	}
 
-	private static double signoidFunctionDerivative(double weightedSum) {
-		double retValue = 0;
-
-		// TODO
-
-		return retValue;
-	}
 }

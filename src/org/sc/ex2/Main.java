@@ -49,7 +49,7 @@ public class Main {
 			}
 		}
 
-		for (int i = 0; i < Utils.NUMBER_OF_PATTERNS; i++) {
+		for (int i = 0; i < Utils.NUMBER_OF_TESTS; i++) {
 			System.out.println("---------- PATTERN Nr " + (i + 1) + " ----------");
 			for (int k = 0; k < 4; k++) {
 				outputValues[k] = 0;
