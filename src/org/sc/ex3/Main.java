@@ -25,8 +25,8 @@ public class Main {
 			outputNeurons[outputNeuron].initWeights(Utils.NUMBER_OF_HIDDEN_NEURONS);
 		}
 
-		for (int i = 0; i < 1000; i++) {
-			for (int inputPattern = 0; inputPattern < Utils.PATTERNS.length - 2; inputPattern++) {
+		for (int i = 0; i < 10; i++) {
+			for (int inputPattern = 0; inputPattern < Utils.PATTERNS.length; inputPattern++) {
 				System.out.println("Pattern " + inputPattern);
 
 				for (int inputNeuron = 0; inputNeuron < Utils.NUMBER_OF_INPUT_NEURONS; inputNeuron++) {
