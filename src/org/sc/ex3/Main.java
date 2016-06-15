@@ -7,7 +7,7 @@ public class Main {
 	private static InputNeuron[] inputNeurons = new InputNeuron[Utils.NUMBER_OF_INPUT_NEURONS];
 	private static HiddenNeuron[] hiddenNeurons = new HiddenNeuron[Utils.NUMBER_OF_HIDDEN_NEURONS];
 	private static OutputNeuron[] outputNeurons = new OutputNeuron[Utils.NUMBER_OF_OUTPUT_NEURONS];
-	private static double learningFactor = 0.1;
+	private static double learningFactor = 0.5;
 
 	public static void main(String[] args) {
 
@@ -25,7 +25,7 @@ public class Main {
 			outputNeurons[outputNeuron].initWeights(Utils.NUMBER_OF_HIDDEN_NEURONS);
 		}
 
-		for (int i = 0; i < 10; i++) {
+		for (int i = 0; i < 1000; i++) {
 			for (int inputPattern = 0; inputPattern < Utils.PATTERNS.length; inputPattern++) {
 				System.out.println("Pattern " + inputPattern);
 
@@ -68,7 +68,6 @@ public class Main {
 				}
 			}
 		}
-
 	}
 
 }

@@ -17,6 +17,7 @@ public class HiddenNeuron {
 	}
 
 	public void functionS1(InputNeuron[] inputNeurons) {
+		S1 = 0;
 		for (int i = 0; i < weights.length; i++) {
 			S1 += inputNeurons[i].inputValue * weights[i];
 		}

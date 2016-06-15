@@ -17,6 +17,7 @@ public class OutputNeuron {
 	}
 
 	public void functionS2(HiddenNeuron[] hiddenNeurons) {
+		S2 = 0;
 		for (int i = 0; i < weights.length; i++) {
 			S2 += hiddenNeurons[i].V1 + weights[i];
 		}
